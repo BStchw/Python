@@ -1,0 +1,120 @@
+from point import Point
+
+class Rectangle:
+    """Klasa reprezentująca prostokąt na płaszczyźnie."""
+
+    def __init__(self, x1, y1, x2, y2):
+        self.pt1 = Point(x1, y1)
+        self.pt2 = Point(x2, y2)
+        if x1 > x2:
+            raise ValueError("x1 jest większe od x2")
+        if y1 > y2:
+            raise ValueError("y1 jest większe od y2")
+
+    def __str__(self):
+        rx1 = str(self.pt1.x)
+        ry1 = str(self.pt1.y)
+        rx2 = str(self.pt2.x)
+        ry2 = str(self.pt2.y)
+        return "[(" + rx1 + ", " + ry1 + "), (" + rx2 + ", " + ry2 + ")]"    # "[(x1, y1), (x2, y2)]"
+
+    def __repr__(self):
+        rx1 = str(self.pt1.x)
+        ry1 = str(self.pt1.y)
+        rx2 = str(self.pt2.x)
+        ry2 = str(self.pt2.y)
+        return "Rectangle(" + rx1 + ", " + ry1 + ", " + rx2 + ", " + ry2 + ")"  # "Rectangle(x1, y1, x2, y2)"
+
+    def __eq__(self, other):
+        return self.pt1 == other.pt1 and self.pt2 == other.pt2
+            # obsługa rect1 == rect2
+
+    def __ne__(self, other):        # obsługa rect1 != rect2
+        return not self == other
+
+    def center(self):
+        a = self.pt2.x - self.pt1.x
+        b = self.pt2.y - self.pt1.y
+
+        return Point(self.pt1.x + a/2, self.pt1.y + b/2)                                # zwraca środek prostokąta
+
+    def area(self):
+
+        a = self.pt2.x - self.pt1.x
+        b = self.pt2.y - self.pt1.y
+
+        return a*b
+        # pole powierzchni
+
+    def move(self, x, y):
+        self.pt1.x = self.pt1.x + x
+        self.pt1.y = self.pt1.y + y
+        self.pt2.x = self.pt2.x + x
+        self.pt2.y = self.pt2.y + y
+
+        return self
+        # przesunięcie o (x, y)
+
+    def intersection(self, other):
+        x1 = max(self.pt1.x, other.pt1.x)
+        y1 = max(self.pt1.y, other.pt1.y)
+
+        x2 = min(self.pt2.x, other.pt2.x)
+        y2 = min(self.pt2.y, other.pt2.y)
+
+        if x1 > x2 or y1 > y2:
+            raise ValueError("Nie ma czesci wspolnej")
+
+        return Rectangle(x1, y1, x2, y2)  # część wspólna prostokątów
+
+    def cover(self, other):
+        x1 = min(self.pt1.x, other.pt1.x)
+        y1 = min(self.pt1.y, other.pt1.y)
+
+        x2 = max(self.pt2.x, other.pt2.x)
+        y2 = max(self.pt2.y, other.pt2.y)
+        return Rectangle(x1, y1, x2, y2)# prostąkąt nakrywający oba
+
+    def make4(self):
+        return Rectangle(self.pt1.x, self.pt1.y, self.pt1.x + (self.pt2.x - self.pt1.x)/2, self.pt1.y + (self.pt2.y - self.pt1.y)/2), Rectangle(self.pt1.x, self.pt1.y + ((self.pt2.y - self.pt1.y)/2), self.pt1.x + (self.pt2.x - self.pt1.x)/2, self.pt2.y), Rectangle(self.pt1.x + (self.pt2.x - self.pt1.x) / 2, self.pt1.y + (self.pt2.y - self.pt1.y) / 2, self.pt2.x, self.pt2.y, ), Rectangle(self.pt1.x + (self.pt2.x - self.pt1.x) / 2, self.pt1.y, self.pt2.x, self.pt1.y + (self.pt2.y - self.pt1.y) / 2)
+
+    @classmethod
+    def from_points(cls, point1, point2):
+        new_rectangle = cls()
+        new_rectangle.x1 = point1.x
+        new_rectangle.y1 = point1.y
+        new_rectangle.x2 = point2.x
+        new_rectangle.y2 = point2.x
+        return new_rectangle
+
+    @property
+    def top(self):
+        return self.y2
+
+    @property
+    def left(self):
+        return self.x1
+
+    @property
+    def bottom(self):
+        return self.y1
+
+    @property
+    def right(self):
+        return self.x2
+
+    @property
+    def topleft(self):
+        return Point(self.x1, self.y2)
+
+    @property
+    def topright(self):
+        return Point(self.x1, self.y2)
+
+    @property
+    def bottomleft(self):
+        return Point(self.x1, self.y1)
+
+    @property
+    def bottomright(self):
+        return Point(self.x2, self.y2)

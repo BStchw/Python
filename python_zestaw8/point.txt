@@ -1,0 +1,94 @@
+import math
+
+class Point:
+    """Klasa reprezentująca punkty na płaszczyźnie."""
+    def __init__(self, x, y):       # konstuktor
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        rx = str(self.x)
+        ry = str(self.y)
+        return "("+rx+", "+ry+")"    # zwraca string "(x, y)"
+
+    def __repr__(self):
+        rx = str(self.x)
+        ry = str(self.y)
+        return "Point(" + rx + ", " + ry + ")" #zwraca string "Point(x, y)"
+
+    def __eq__(self, other):        # obsługa point1 == point2
+        if self.x == other.x and self.y == other.y:
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):        # obsługa point1 != point2
+        return not self == other
+
+    # Punkty jako wektory 2D.
+    def __add__(self, other):
+        new = Point(self.x + other.x, self.y + other.y)
+        return new                  # v1 + v2
+
+    def __sub__(self, other):
+        new = Point(self.x - other.x, self.y - other.y)
+        return new  # v1 - v2
+
+    def __mul__(self, other):
+        return self.x*self.y + other.x*other.y              # v1 * v2, iloczyn skalarny, zwraca liczbę
+
+    def cross(self, other):         # v1 x v2, iloczyn wektorowy 2D, zwraca liczbę
+        return self.x * other.y - self.y * other.x
+
+    def length(self):
+        return math.sqrt(pow(self.x, 2) + pow(self.y, 2))    # długość wektora
+
+    def __hash__(self):
+        return hash((self.x, self.y))   # bazujemy na tuple, immutable points
+
+# Kod testujący moduł.
+
+import unittest
+
+class TestPoint(unittest.TestCase):
+    def setUp(self):
+        self.w1 = Point(3, 4)
+        self.w2 = self.w1
+
+    def test_print(self):  # test str() i repr()
+        self.assertEqual(str(self.w1), "(3, 4)")
+        self.assertEqual(repr(self.w1), "Point(3, 4)")
+
+    def test_cmp(self):
+        self.assertTrue(Point(3, 4) == Point(3, 4))
+        self.assertFalse(Point(3, 5) == Point(3, 6))
+        self.assertTrue(Point(3, 5) != Point(3, 4))
+
+
+    def test_add(self):  # musi działać porównywanie
+        self.assertEqual(Point(1, 4) + Point(4, 6), Point(5, 10))
+        self.assertEqual(Point(2, 4) + Point(6, 2), Point(8, 6))
+        self.assertEqual(Point(-2, 2) + Point(11, 3), Point(9, 5))
+
+    def test_sub(self):  # musi działać porównywanie
+        self.assertEqual(Point(1, 4) - Point(4, 6), Point(-3, -2))
+        self.assertEqual(Point(2, 4) - Point(6, 2), Point(-4, 2))
+        self.assertEqual(Point(-2, 2) - Point(11, 3), Point(-13, -1))
+
+    def test_mul(self):  # musi działać porównywanie
+        self.assertEqual(Point(1, 4) * Point(4, 6), 28)
+        self.assertEqual(Point(2, 4) * Point(6, 2), 20)
+        self.assertEqual(Point(-2, 2) * Point(11, 3), 29)
+
+    def test_cross(self):  # musi działać porównywanie
+        self.assertEqual(Point.cross(Point(3, 4), Point(3, 6)), 6)
+        self.assertEqual(Point.cross(Point(2, 11), Point(4, 7)), -30)
+        self.assertEqual(Point.cross(Point(6, 3), Point(8, 9)), 30)
+
+    def test_length(self):
+        self.assertEqual(Point.length(Point(3, 4)), 5)
+        self.assertEqual(Point.length(Point(6, 8)), 10)
+        self.assertEqual(Point.length(Point(6, 3)), math.sqrt(45))
+
+    def test_hash(self):
+        self.assertEqual(hash(self.w1), hash(self.w2))

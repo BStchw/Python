@@ -1,0 +1,83 @@
+from point import Point
+
+class Rectangle:
+    """Klasa reprezentująca prostokąt na płaszczyźnie."""
+
+    def __init__(self, x1, y1, x2, y2):
+        self.pt1 = Point(x1, y1)
+        self.pt2 = Point(x2, y2)
+
+    def __str__(self):
+        rx1 = str(self.pt1.x)
+        ry1 = str(self.pt1.y)
+        rx2 = str(self.pt2.x)
+        ry2 = str(self.pt2.y)
+        return "[(" + rx1 + ", " + ry1 + "), (" + rx2 + ", " + ry2 + ")]"    # "[(x1, y1), (x2, y2)]"
+
+    def __repr__(self):
+        rx1 = str(self.pt1.x)
+        ry1 = str(self.pt1.y)
+        rx2 = str(self.pt2.x)
+        ry2 = str(self.pt2.y)
+        return "Rectangle(" + rx1 + ", " + ry1 + ", " + rx2 + ", " + ry2 + ")"  # "Rectangle(x1, y1, x2, y2)"
+
+    def __eq__(self, other):
+        if self.pt1 == other.pt1 and self.pt2 == other.pt2:
+            return True
+        else:
+            return False
+            # obsługa rect1 == rect2
+
+    def __ne__(self, other):        # obsługa rect1 != rect2
+        return not self == other
+
+    def center(self):
+        a = self.pt2.x - self.pt1.x
+        b = self.pt2.y - self.pt1.y
+
+        return Point(self.pt1.x + a/2, self.pt1.y + b/2)                                # zwraca środek prostokąta
+
+    def area(self):
+        a = self.pt2.x - self.pt1.x
+        b = self.pt2.y - self.pt1.y
+
+        return a*b
+        # pole powierzchni
+
+    def move(self, x, y):
+        self.pt1.x = self.pt1.x + x
+        self.pt1.y = self.pt1.y + y
+        self.pt2.x = self.pt2.x + x
+        self.pt2.y = self.pt2.y + y
+
+        return self
+        # przesunięcie o (x, y)
+
+# Kod testujący moduł.
+
+import unittest
+
+class TestRectangle(unittest.TestCase):
+    def setUp(self):
+        self.r1 = Rectangle(3, 4, 6, 8)
+
+    def test_print(self):  # test str() i repr()
+        self.assertEqual(str(self.r1), "[(3, 4), (6, 8)]")
+        self.assertEqual(repr(self.r1), "Rectangle(3, 4, 6, 8)")
+
+    def test_cmp(self):
+        self.assertTrue(Rectangle(3, 4, 6, 8) == Rectangle(3, 4, 6, 8))
+        self.assertFalse(Rectangle(3, 4, 5, 8) == Rectangle(3, 4, 7, 8))
+        self.assertTrue(Rectangle(3, 4, 6, 8) != Rectangle(3, 4, 7, 8))
+
+    def test_center(self):
+        self.assertEqual(Rectangle.center(Rectangle(0, 0, 4, 4)), Point(2, 2))
+        self.assertEqual(Rectangle.center(Rectangle(7, 5, 10, 8)), Point(8.5, 6.5))
+
+    def test_area(self):
+        self.assertEqual(Rectangle.area(Rectangle(0, 0, 4, 4)), 16)
+        self.assertEqual(Rectangle.area(Rectangle(7, 5, 10, 8)), 9)
+
+    def test_move(self):
+        self.assertEqual(Rectangle.move(Rectangle(0, 0, 4, 4), 1, 1), Rectangle(1, 1, 5, 5))
+        self.assertEqual(Rectangle.move(Rectangle(6, 4, 9, 3), 45, 16), Rectangle(51, 20, 54, 19))

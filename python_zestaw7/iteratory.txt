@@ -1,0 +1,19 @@
+import  itertools
+import random
+
+def i_01():
+    for i in itertools.cycle('01'):
+        print(i, end = ", ")
+
+def i_l():
+    list = ["N", "E", "S", "W"]
+    while True:
+        print(random.choice(list))
+
+def i_16():
+    for i in itertools.cycle('0123456'):
+        print(i, end = ", ")
+
+#i_01()
+#i_l()
+#i_16()
